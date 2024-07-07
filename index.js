@@ -33,6 +33,7 @@ const createAndSaveUser = (username, done) => {
   var newItem = new User({ username: username });
   newItem.save((err, data) => {
     if (err) return console.error(err);
+    console.log("data1", data);
     done(null, data);
   });
 };
@@ -41,14 +42,12 @@ app.post('/api/users', function (req, res) {
   console.log("data", req.body.username);
   const username = req.body.username;
 
-  const response = createAndSaveUser(username, (res) => {
-    console.log("response", res);
+  createAndSaveUser(username, (err, response) => {
+    res.json({
+      username: response.username,
+      _id: response._id
+    })
   });
-
-  res.json({
-    username: response.username,
-    _id: response._id
-  })
 });
 
 
