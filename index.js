@@ -33,20 +33,30 @@ const createAndSaveUser = (username, done) => {
   var newItem = new User({ username: username });
   newItem.save((err, data) => {
     if (err) return console.error(err);
-    console.log("data1", data);
     done(null, data);
   });
 };
 
-app.post('/api/users', function (req, res) {
-  console.log("data", req.body.username);
-  const username = req.body.username;
+const getUserList = (done) => {
+  itemList = User.find({}, (err, data) => {
+    if (err) return console.error(err);
+    done(data);
+  })
+}
 
+app.post('/api/users', function (req, res) {
+  const username = req.body.username;
   createAndSaveUser(username, (err, response) => {
     res.json({
       username: response.username,
       _id: response._id
     })
+  });
+});
+
+app.get('/api/users', function (req, res) {
+  getUserList((response) => {
+    res.json(response);
   });
 });
 
